@@ -26,9 +26,9 @@ function comment {
 }
 
 function main {
-  build "$HEAD_REF"
-  build "$BASE_REF"
-  DIFF=$(git diff --no-index "$TMP_DIR/$BASE_REF" "$TMP_DIR/$HEAD_REF")
+  build "$INPUT_HEAD_REF"
+  build "$INPUT_BASE_REF"
+  DIFF=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
   if [ "$?" == "1" ]; then
     comment
   fi
