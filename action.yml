@@ -1,0 +1,11 @@
+name: "kustomize-diff"
+description: "Kustomize build head and base of PR, add diff as comment"
+outputs:
+  diff: 
+    description: "The diff between kustomize build on base and head of this PR"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - github.base_ref
+    - github.head_ref

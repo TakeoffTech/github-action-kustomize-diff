@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eu
+
+GIT_REF_BASE="${1}"
+GIT_REF_HEAD="${2}"
+TMP_DIR="$(mktemp -d)"
+
+function build {
+  local ref="$1"
+  git checkout "$ref" --quiet
+  for envpath in kustomize/*; do
+    local build_dir
+    if [ "$envpath" == "kustomize/_modules" ]; then continue; fi
+    build_dir="$TMP_DIR/$ref/$(basename "$envpath")"
+    mkdir -p "$build_dir"
+    kustomize build "$envpath" -o "$build_dir"
+  done
+}
+
+function main {
+  build "$GIT_REF_HEAD"
+  build "$GIT_REF_BASE"
+  git diff --no-index "$TMP_DIR/$GIT_REF_BASE" "$TMP_DIR/$GIT_REF_HEAD"
+}
+
+main
