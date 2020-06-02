@@ -1,11 +1,17 @@
 name: "kustomize-diff"
 description: "Kustomize build head and base of PR, add diff as comment"
 env:
-  EVENT: ${{ github.event }}
-  TOKEN: ${{ github.token }}
-outputs:
-  diff: 
-    description: "The diff between kustomize build on base and head of this PR"
+  EVENT: ${{ inputs.event }}
+  TOKEN: ${{ inputs.token }}
+inputs:
+  event:
+    description: "Event that triggered action"
+    default: ${{ github.event }}
+    required: false
+  token:
+    description: "Token for GitHub authentication"
+    default: ${{ github.token }}
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
