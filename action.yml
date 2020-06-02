@@ -1,8 +1,5 @@
 name: "kustomize-diff"
 description: "Kustomize build head and base of PR, add diff as comment"
-env:
-  EVENT: ${{ inputs.event }}
-  TOKEN: ${{ inputs.token }}
 inputs:
   event:
     description: "Event that triggered action"
