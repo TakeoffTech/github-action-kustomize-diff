@@ -35,11 +35,13 @@ function comment {
 function main {
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
+  set +e
   DIFF=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
-  printf "Diff: %s\n" "$DIFF"
   if [ "$?" == "1" ]; then
     comment
   fi
+  set -e
+  printf "Diff: %s\n" "$DIFF"
 }
 
 main
