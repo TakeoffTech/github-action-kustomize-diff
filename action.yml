@@ -3,12 +3,10 @@ description: "Kustomize build head and base of PR, add diff as comment"
 inputs:
   event:
     description: "Event that triggered action"
-    default: ${{ github.event }}
-    required: false
+    required: true
   token:
     description: "Token for GitHub authentication"
-    default: ${{ github.token }}
-    required: false
+    required: true
 runs:
   using: "docker"
   image: "Dockerfile"
