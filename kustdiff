@@ -2,8 +2,6 @@
 
 set -eu
 
-GIT_REF_BASE="${1}"
-GIT_REF_HEAD="${2}"
 TMP_DIR="$(mktemp -d)"
 
 function build {
@@ -18,10 +16,22 @@ function build {
   done
 }
 
+function comment {
+  curl \
+    --data "{\"body\": \"$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")\"}" \
+    --header "authorization: Bearer $TOKEN" \
+    --header "content-type: application/json" \
+    --request POST \
+    --url "https://api.github.com/repos/$GITHUB_REPOSITORY}/issues/$(jq -r '.number' <<< "$EVENT")/comments"
+}
+
 function main {
-  build "$GIT_REF_HEAD"
-  build "$GIT_REF_BASE"
-  git diff --no-index "$TMP_DIR/$GIT_REF_BASE" "$TMP_DIR/$GIT_REF_HEAD"
+  build "$GIT_HEAD_REF"
+  build "$GIT_BASE_REF"
+  DIFF=$(git diff --no-index "$TMP_DIR/$GIT_BASE_REF" "$TMP_DIR/$GIT_HEAD_REF")
+  if [ "$?" == "1" ]; then
+    comment
+  fi
 }
 
 main
