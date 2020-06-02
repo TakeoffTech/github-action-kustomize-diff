@@ -19,10 +19,10 @@ function build {
 function comment {
   curl \
     --data "{\"body\": \"$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")\"}" \
-    --header "authorization: Bearer $INPUT_TOKEN" \
-    --header "content-type: application/json" \
+    --header "Authorization: Bearer $INPUT_TOKEN" \
+    --header "Content-Type: application/json" \
     --request POST \
-    --url "https://api.github.com/repos/$GITHUB_REPOSITORY}/issues/$(jq -r '.number' <<< "$INPUT_EVENT")/comments"
+    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
 }
 
 function main {

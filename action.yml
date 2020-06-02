@@ -1,8 +1,8 @@
 name: "kustomize-diff"
 description: "Kustomize build head and base of PR, add diff as comment"
 inputs:
-  event:
-    description: "Event that triggered action"
+  pr_num:
+    description: "PR number / ID"
     required: true
   token:
     description: "Token for GitHub authentication"
