@@ -6,29 +6,37 @@ TMP_DIR="$(mktemp -d)"
 
 function build {
   local ref="$1"
+  printf "Checking out ref: %s\n" "$ref"
   git checkout "$ref" --quiet
   for envpath in kustomize/*; do
     local build_dir
     if [ "$envpath" == "kustomize/_modules" ]; then continue; fi
     build_dir="$TMP_DIR/$ref/$(basename "$envpath")"
+    printf "Creating build directory: %s\n" "$build_dir"
     mkdir -p "$build_dir"
+    echo "Running kustomize"
     kustomize build "$envpath" -o "$build_dir"
   done
 }
 
 function comment {
+  local data url
+  data="{\"body\": \"$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")\"}"
+  url="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
+  printf "Trying to write comment to GitHub\ndata: %s\nurl: %s\n" "$data" "$url"
   curl \
-    --data "{\"body\": \"$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")\"}" \
+    --data "$data" \
     --header "Authorization: Bearer $INPUT_TOKEN" \
     --header "Content-Type: application/json" \
     --request POST \
-    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
+    --url "$url"
 }
 
 function main {
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
   DIFF=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
+  printf "Diff: %s\n" "$DIFF"
   if [ "$?" == "1" ]; then
     comment
   fi
