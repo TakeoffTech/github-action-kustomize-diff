@@ -1,6 +1,12 @@
 name: "kustomize-diff"
 description: "Kustomize build head and base of PR, add diff as comment"
 inputs:
+  base_ref:
+    description: "Ref for PR base"
+    required: true
+  head_ref:
+    description: "Ref for PR head"
+    required: true
   pr_num:
     description: "PR number / ID"
     required: true
