@@ -1,7 +1,6 @@
 FROM alpine:3
 
 RUN apk add --no-cache \
-  curl \
   bash \
   git \
   && rm -rf /var/cache/apk/*
