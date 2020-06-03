@@ -17,6 +17,9 @@ inputs:
     description: "Token for GitHub authentication"
     required: true
     default: ${{ github.token }}
+outputs:
+  diff:
+    description: "Diff between kustomize built head and base"
 runs:
   using: "docker"
   image: "Dockerfile"

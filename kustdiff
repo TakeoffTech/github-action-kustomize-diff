@@ -19,31 +19,16 @@ function build {
   done
 }
 
-function comment {
-  local body data escaped_body url
-  body=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")
-  escaped_body=$(jq -sRr @uri <<< "$body")
-  data="{\"body\": \"$escaped_body\"}"
-  url="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
-  printf "\n\nTrying to write comment to GitHub\ndata: %s\nurl: %s\n" "$data" "$url"
-  curl \
-    --data "$data" \
-    --header "Authorization: Bearer $INPUT_TOKEN" \
-    --header "Content-Type: application/json" \
-    --request POST \
-    --url "$url"
-}
-
 function main {
+  local diff output
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
   set +e
-  DIFF=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
-  if [ "$?" == "1" ]; then
-    comment
-  fi
+  diff=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
   set -e
-  printf "\n\nDiff: %s\n" "$DIFF"
+  output=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$diff")
+  echo "::set-output name=diff::$output"
+  printf "\n\nOutput: %s\n" "$output"
 }
 
 main
