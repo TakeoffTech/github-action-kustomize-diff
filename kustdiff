@@ -20,7 +20,7 @@ function build {
 }
 
 function main {
-  local diff output
+  local diff escaped_output output
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
   set +e
