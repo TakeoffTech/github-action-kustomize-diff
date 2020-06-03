@@ -27,8 +27,9 @@ function main {
   diff=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
   set -e
   output=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$diff")
-  echo "::set-output name=diff::$output"
-  printf "\n\nOutput: %s\n" "$output"
+  escaped_output=${output//$'\n'/'%0A'}
+  echo "::set-output name=diff::$escaped_output"
+  printf "\n\nOutput: %s\n" "$escaped_output"
 }
 
 main
