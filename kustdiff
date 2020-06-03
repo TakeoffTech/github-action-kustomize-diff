@@ -20,10 +20,10 @@ function build {
 }
 
 function comment {
-  local data url
-  data="{\"body\": \"$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")\"}"
-  data="${data//$'\n'/'%0A'}"
-  data="${data//$"'"/'%27'}"
+  local body data escaped_body url
+  body=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$DIFF")
+  escaped_body=$(jq -sRr @uri <<< "$body")
+  data="{\"body\": \"$escaped_body\"}"
   url="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
   printf "\n\nTrying to write comment to GitHub\ndata: %s\nurl: %s\n" "$data" "$url"
   curl \

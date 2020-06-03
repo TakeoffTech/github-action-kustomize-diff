@@ -4,6 +4,7 @@ RUN apk add --no-cache \
   curl \
   bash \
   git \
+  jq \
   && rm -rf /var/cache/apk/*
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
