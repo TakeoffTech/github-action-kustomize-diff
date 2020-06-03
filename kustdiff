@@ -25,7 +25,7 @@ function comment {
   url="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$INPUT_PR_NUM/comments"
   printf "\n\nTrying to write comment to GitHub\ndata: %s\nurl: %s\n" "$data" "$url"
   curl \
-    --data "$data" \
+    --data "${data//$'\n'/'%0A'}" \
     --header "Authorization: Bearer $INPUT_TOKEN" \
     --header "Content-Type: application/json" \
     --request POST \
