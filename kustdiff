@@ -10,7 +10,7 @@ function build {
   git checkout "$ref" --quiet
   for envpath in kustomize/*; do
     local build_dir
-    if [ "$envpath" == "kustomize/_modules" ]; then continue; fi
+    if [ "$envpath" == "kustomize/_modules" ] || [ "$envpath" == "kustomize/base" ]; then continue; fi
     build_dir="$TMP_DIR/$ref/$(basename "$envpath")"
     printf "\n\nCreating build directory: %s\n" "$build_dir"
     mkdir -p "$build_dir"
