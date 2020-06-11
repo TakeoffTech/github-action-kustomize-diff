@@ -14,6 +14,8 @@ This action can be combined with [unsplash/comment-on-pr](https://github.com/uns
 
 # Example configuration
 
+The below example will run `kustomize-diff` against your branch and commit the changes due to be applied back to your Pull Request.
+
 ```
 name: kustomize-diff
 on:
