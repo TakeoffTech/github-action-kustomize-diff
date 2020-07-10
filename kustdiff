@@ -2,17 +2,22 @@
 
 set -eux
 
-TMP_DIR="$(mktemp -d)"
+#TMP_DIR="$(mktemp -d)"
+TMP_DIR=${TMP_DIR:-$(mktemp -d)}
+
+function git_diff {
+  git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF"
+}
 
 function build {
   local ref="$1"
   printf "\n\nChecking out ref: %s\n" "$ref"
   git checkout "$ref" --quiet
-  for envpath in kustomize/*; do
+  for envpath in $INPUT_ENVPATH_PATTERN; do
     local build_dir
     if ! [ -d "$envpath" ]; then continue; fi
-    if [ "$envpath" == "kustomize/_modules" ]; then continue; fi
-    if [ "$envpath" == "kustomize/base" ]; then continue; fi
+    if [[ "$envpath" == *"_modules"* ]]; then continue; fi
+    if [[ "$envpath" == *"base"* ]]; then continue; fi
     build_dir="$TMP_DIR/$ref/$(basename "$envpath")"
     printf "\n\nCreating build directory: %s\n" "$build_dir"
     mkdir -p "$build_dir"
@@ -26,7 +31,7 @@ function main {
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
   set +e
-  diff=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
+  diff=$(git_diff)
   set -e
   output=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$diff")
   escaped_output=${output//$'\n'/'%0A'}
@@ -34,4 +39,11 @@ function main {
   printf "\n\nOutput: %s\n" "$escaped_output"
 }
 
-main
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]
+then
+  main
+  if [ $? -gt 0 ]
+  then
+    exit 1
+  fi
+fi

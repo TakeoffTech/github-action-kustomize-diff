@@ -13,6 +13,10 @@ inputs:
     description: "PR number / ID"
     required: true
     default: ${{ github.event.number }}
+  envpath_pattern:
+    description: "pattern to find kustomize build directories"
+    required: true
+    default: "kustomize/*"
   token:
     description: "Token for GitHub authentication"
     required: true
