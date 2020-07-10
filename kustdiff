@@ -33,6 +33,7 @@ function main {
   set +e
   diff=$(git_diff)
   set -e
+  if [ -z "$diff" ]; then diff="No Difference"; fi
   output=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$diff")
   escaped_output=${output//$'\n'/'%0A'}
   echo "::set-output name=diff::$escaped_output"
