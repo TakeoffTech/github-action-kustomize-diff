@@ -10,6 +10,7 @@ setup(){
 
   export INPUT_HEAD_REF='dev'
   export INPUT_BASE_REF='master'
+  export INPUT_ENVPATH_PATTERN='kustomize/*'
   export TMP_DIR='/tmp/tmp.test'
 }
 
