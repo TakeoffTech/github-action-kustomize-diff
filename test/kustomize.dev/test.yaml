@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: testmap
+data:
+  foo: bar
+  foo1: bar1
